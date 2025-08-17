@@ -1,0 +1,38 @@
+Generate a TUI to render a 2D array simulation in C. The specific data structures will be below. The TUI should have a box that can be panned and zoomed in and out to represent the state of each cell (on/off represented by the integer at that cell of the array) and active (a separate set of coordinates, passed into the renderer; rendered in red). At the bottom of the screen, the coordinates of the bottom left of the viewport should be listed, and at the bottom right, the number of cells that one character is representing.
+
+When one character represents more than one cell, a unicode character should be used to denote the "full-ness" of that block, and render an appropriate character (the unicode pattern characters may be useful here.)
+
+The renderer does not need to handle the state of the simulation, simply render what state it is given. Do this by creating a thread to handle relevant keypresses and UI re-rendering of the same state (due to zoom, pan, etc.), and present a function to pass in a new state to re-render the relevant areas.
+
+sim.h
+
+typedef struct Coordinate Coordinate;
+typedef enum Direction Direction;
+typedef struct Position Position;
+typedef struct Behavior Behavior;
+typedef struct State State;
+
+struct Coordinate {
+    int x, y;
+};
+
+enum Direction {
+    UP, RIGHT, DOWN, LEFT
+};
+
+struct Position {
+    Coordinate coordinate;
+    Direction direction;
+};
+
+struct Behavior {
+    int (*condition)(State*);
+    void (*execution)(State*);
+};
+
+struct State {
+    int **board;
+    int rule_len, iteration;
+    Position position;
+    Behavior *rules;
+};
